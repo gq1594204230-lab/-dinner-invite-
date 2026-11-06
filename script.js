@@ -59,29 +59,25 @@
     const viewportHeight = viewport?.height || window.innerHeight;
     const viewportLeft = viewport?.offsetLeft || 0;
     const viewportTop = viewport?.offsetTop || 0;
-    const cardRect = document.getElementById('inviteCard').getBoundingClientRect();
-    const sidePadding = 20;
-    const topPadding = 24;
-    const bottomPadding = 54;
-    const cardInset = 16;
-    // Use the unscaled layout size. This deliberately leaves extra room when
-    // the button is shrinking, so its transform cannot drift off-screen.
+    const sidePadding = 14;
+    const topPadding = 18;
+    const bottomPadding = 28;
     const width = noButton.offsetWidth || 112;
     const height = noButton.offsetHeight || 38;
     const visibleMinLeft = viewportLeft + sidePadding;
     const visibleMinTop = viewportTop + topPadding;
     const visibleMaxLeft = viewportLeft + viewportWidth - width - sidePadding;
     const visibleMaxTop = viewportTop + viewportHeight - height - bottomPadding;
-    const minLeft = Math.max(visibleMinLeft, cardRect.left + cardInset);
-    const minTop = Math.max(visibleMinTop, cardRect.top + cardInset);
-    const maxLeft = Math.max(minLeft, Math.min(visibleMaxLeft, cardRect.right - width - cardInset));
-    const maxTop = Math.max(minTop, Math.min(visibleMaxTop, cardRect.bottom - height - cardInset));
+    const minLeft = visibleMinLeft;
+    const minTop = visibleMinTop;
+    const maxLeft = Math.max(minLeft, visibleMaxLeft);
+    const maxTop = Math.max(minTop, visibleMaxTop);
     const yesRect = yesButton.getBoundingClientRect();
     const gap = 12;
     const clampLeft = (value) => Math.min(maxLeft, Math.max(minLeft, value));
     const clampTop = (value) => Math.min(maxTop, Math.max(minTop, value));
-    // Keep the playful button close to “好呀”, instead of sending it to the
-    // far corners of the invitation card.
+    // Keep the refusal button close to “好呀”, while clamping every spot
+    // directly to the visible mobile viewport.
     const safeSpots = [
       [yesRect.right + gap, yesRect.top + (yesRect.height - height) / 2],
       [yesRect.left - width - gap, yesRect.top + (yesRect.height - height) / 2],
@@ -102,11 +98,17 @@
 
     if (noClicks < 5) {
       noButton.textContent = noMessages[noClicks - 1];
-      noButton.style.transform = `scale(${1 - noClicks * 0.08})`;
       noButton.style.opacity = `${1 - noClicks * 0.05}`;
       if (noClicks >= 2) {
         noButton.classList.add('is-chasing');
+        const compactWidth = Math.max(112, 250 - noClicks * 38);
+        noButton.style.width = `${compactWidth}px`;
+        noButton.style.minHeight = `${Math.max(40, 56 - noClicks * 4)}px`;
+        noButton.style.fontSize = `${Math.max(13, 17 - noClicks)}px`;
+        noButton.style.transform = 'none';
         moveNoButton();
+      } else {
+        noButton.style.transform = 'scale(.92)';
       }
       return;
     }

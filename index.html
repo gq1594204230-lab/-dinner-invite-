@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#fff4f5" />
+    <meta name="description" content="今晚有空吗？一份轻松可爱的晚餐邀请。" />
+    <title>今晚有空吗？</title>
+    <link rel="preload" as="image" href="assets/reaction-2.png" />
+    <link rel="preload" as="image" href="assets/reaction-3.png" />
+    <link rel="preload" as="image" href="assets/reaction-4.png" />
+    <link rel="preload" as="image" href="assets/reaction-5.png" />
+    <link rel="preload" as="image" href="assets/success-cat.png" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="scene" aria-live="polite">
+      <div class="background-glow glow-one"></div>
+      <div class="background-glow glow-two"></div>
+      <div class="sparkles" aria-hidden="true">
+        <i>✦</i><i>✧</i><i>✦</i><i>✧</i><i>✦</i><i>✧</i>
+      </div>
+
+      <section class="card invite-card" id="inviteCard">
+        <div class="reaction-stage" aria-live="polite">
+          <img class="reaction-image" id="reactionImage" src="assets/reaction-1.png" alt="可爱的猫咪拿着玫瑰" decoding="sync" />
+        </div>
+        <h1>吴怡函，今天晚上有时间<br />一起吃个饭嘛？<span class="emoji">🥰</span></h1>
+
+        <div class="choices" id="choices">
+          <button class="yes-button" id="yesButton" type="button">
+            <span>好呀！</span><b>♥</b>
+          </button>
+          <button class="no-button" id="noButton" type="button">今天不太方便 <span>🙈</span></button>
+        </div>
+      </section>
+
+      <section class="card success-card" id="successCard" aria-hidden="true">
+        <div class="success-icon"><img src="assets/success-cat.png" alt="可爱的猫咪" decoding="sync" /><i aria-hidden="true">✦</i><b aria-hidden="true">♥</b></div>
+        <p class="success-title">那我们晚上见啦！<span>❤️</span></p>
+        <div class="success-doodles" aria-hidden="true"><span>✿</span><span>✦</span><span>✿</span></div>
+      </section>
+    </main>
+    <div class="celebration" id="celebration" aria-hidden="true"></div>
+    <script src="script.js"></script>
+  </body>
+</html>

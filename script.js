@@ -55,42 +55,28 @@
   }
 
   function moveNoButton() {
-    const viewport = window.visualViewport;
-    const viewportWidth = viewport?.width || window.innerWidth;
-    const viewportHeight = viewport?.height || window.innerHeight;
-    const viewportLeft = viewport?.offsetLeft || 0;
-    const viewportTop = viewport?.offsetTop || 0;
-    const sidePadding = 14;
-    const topPadding = 18;
-    const bottomPadding = 28;
     const width = noButton.offsetWidth || 112;
     const height = noButton.offsetHeight || 38;
     const cardRect = inviteCard.getBoundingClientRect();
-    const cardInset = 14;
-    // The usable rectangle is the part of the *white invite card* that is
-    // still on screen. This is deliberately stricter than viewport-only
-    // clamping: the button can never escape below or beside the card.
-    const minLeft = Math.max(viewportLeft + sidePadding, cardRect.left + cardInset);
-    const minTop = Math.max(viewportTop + topPadding, cardRect.top + cardInset);
-    const maxLeft = Math.max(
-      minLeft,
-      Math.min(viewportLeft + viewportWidth - width - sidePadding, cardRect.right - width - cardInset)
-    );
-    const maxTop = Math.max(
-      minTop,
-      Math.min(viewportTop + viewportHeight - height - bottomPadding, cardRect.bottom - height - cardInset)
-    );
+    const inset = 14;
+    // Coordinates below are local to .invite-card (not the mobile screen),
+    // so the rejection button is physically unable to leave the white card.
+    const minLeft = inset;
+    const minTop = inset;
+    const maxLeft = Math.max(minLeft, cardRect.width - width - inset);
+    const maxTop = Math.max(minTop, cardRect.height - height - inset);
     const yesRect = yesButton.getBoundingClientRect();
     const clampLeft = (value) => Math.min(maxLeft, Math.max(minLeft, value));
     const clampTop = (value) => Math.min(maxTop, Math.max(minTop, value));
-    // Keep every chase position inside the large “好呀” button. It is both
-    // close to the choice and guaranteed to stay within the white card.
-    const inset = 10;
+    const yesTop = yesRect.top - cardRect.top;
+    const yesBottom = yesRect.bottom - cardRect.top;
+    // Four fixed, card-local spots around the main choice. The card itself
+    // moves with the page, but these points can never be below the card.
     const safeSpots = [
-      [yesRect.left + inset, yesRect.top + inset],
-      [yesRect.right - width - inset, yesRect.top + inset],
-      [yesRect.right - width - inset, yesRect.bottom - height - inset],
-      [yesRect.left + inset, yesRect.bottom - height - inset]
+      [minLeft, yesBottom + 10],
+      [maxLeft, yesBottom + 10],
+      [maxLeft, yesTop - height - 12],
+      [minLeft, yesTop - height - 12]
     ].map(([left, top]) => [clampLeft(left), clampTop(top)]);
     safeSpotIndex = (safeSpotIndex + 1) % safeSpots.length;
     const [left, top] = safeSpots[safeSpotIndex];

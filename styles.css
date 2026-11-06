@@ -47,6 +47,7 @@ body {
   -webkit-backdrop-filter: blur(12px);
   transition: opacity .55s ease, transform .55s cubic-bezier(.2,.8,.2,1), visibility .55s;
 }
+.invite-card { position: relative; }
 .eyebrow { margin: 0; color: #b18490; font-size: 12px; letter-spacing: .12em; font-weight: 600; }
 .eyebrow span { display:inline-block; margin: 0 8px; color:#eba1b5; transform: translateY(-1px); }
 
@@ -73,7 +74,7 @@ button { font-family:inherit; border:0; cursor:pointer; touch-action: manipulati
 }
 .no-button:active { color:#b9516f; background:#fff5f6; }
 .no-button.is-chasing {
-  position:fixed; z-index:60; background:#fff8fa;
+  position:absolute; z-index:60; background:#fff8fa;
   transition:left .3s cubic-bezier(.2,.85,.25,1.2), top .3s cubic-bezier(.2,.85,.25,1.2), transform .36s cubic-bezier(.2,.85,.25,1.24), box-shadow .25s ease, background .25s ease, opacity .3s ease;
 }
 .no-button.is-running {

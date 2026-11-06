@@ -23,13 +23,15 @@
   let noClicks = 0;
   let finished = false;
   let safeSpotIndex = -1;
+  let isUpdatingChoice = false;
 
-  // Keep later reactions downloaded and decoded before the first tap so the
-  // visible image can swap on the same interaction frame.
-  reactionSources.slice(1).forEach((source) => {
-    const preload = new Image();
-    preload.src = source;
-    if (preload.decode) preload.decode().catch(() => {});
+  // Keep strong references to the preloads. In WeChat, anonymous Image
+  // objects can be discarded while a click is happening, causing the text to
+  // change before the next reaction image has painted.
+  const reactionPreloads = reactionSources.map((source) => {
+    const image = new Image();
+    image.src = source;
+    return image;
   });
 
   function growYesButton() {
@@ -45,13 +47,35 @@
     yesButton.style.transform = 'scale(1)';
   }
 
-  function updateReactionImage() {
-    const imageNumber = Math.min(noClicks + 1, 5);
-    reactionImage.src = reactionSources[imageNumber - 1];
+  function waitForImage(image) {
+    if (image.complete) return Promise.resolve(image.naturalWidth > 0);
+    return new Promise((resolve) => {
+      image.addEventListener('load', () => resolve(true), { once: true });
+      image.addEventListener('error', () => resolve(false), { once: true });
+    });
+  }
+
+  async function updateReactionImage(nextClickCount) {
+    const imageNumber = Math.min(nextClickCount + 1, 5);
+    const preload = reactionPreloads[imageNumber - 1];
+    const loaded = await waitForImage(preload);
+    if (!loaded) return false;
+
+    try {
+      if (preload.decode) await preload.decode();
+      reactionImage.src = preload.src;
+      // Do not update any button state until the replacement image has also
+      // decoded. This keeps the picture and option change in the same frame.
+      if (reactionImage.decode) await reactionImage.decode();
+    } catch {
+      return false;
+    }
+
     reactionImage.alt = imageNumber === 5 ? '委屈哭泣的小猫' : '可爱的猫咪表情';
     reactionImage.classList.remove('is-changing');
     void reactionImage.offsetWidth;
     reactionImage.classList.add('is-changing');
+    return true;
   }
 
   function moveNoButton() {
@@ -85,33 +109,47 @@
     noButton.style.top = `${Math.round(top)}px`;
   }
 
-  function updateChoices() {
-    noClicks += 1;
-    updateReactionImage();
-    growYesButton();
+  async function updateChoices() {
+    if (isUpdatingChoice || finished) return;
+    isUpdatingChoice = true;
+    noButton.disabled = true;
+    const nextClickCount = noClicks + 1;
 
-    if (noClicks < 5) {
-      noButton.textContent = noMessages[noClicks - 1];
-      noButton.style.opacity = `${1 - noClicks * 0.05}`;
-      if (noClicks >= 2) {
-        noButton.classList.add('is-chasing');
-        const compactWidth = Math.max(112, 250 - noClicks * 38);
-        noButton.style.width = `${compactWidth}px`;
-        noButton.style.minHeight = `${Math.max(40, 56 - noClicks * 4)}px`;
-        noButton.style.fontSize = `${Math.max(13, 17 - noClicks)}px`;
-        noButton.style.transform = 'none';
-        moveNoButton();
-      } else {
-        noButton.style.transform = 'scale(.92)';
+    try {
+      const imageUpdated = await updateReactionImage(nextClickCount);
+      // If the image cannot be loaded, leave the existing choice untouched.
+      // A retry stays visually truthful rather than showing a mismatched state.
+      if (!imageUpdated) return;
+
+      noClicks = nextClickCount;
+      growYesButton();
+
+      if (noClicks < 5) {
+        noButton.textContent = noMessages[noClicks - 1];
+        noButton.style.opacity = `${1 - noClicks * 0.05}`;
+        if (noClicks >= 2) {
+          noButton.classList.add('is-chasing');
+          const compactWidth = Math.max(112, 250 - noClicks * 38);
+          noButton.style.width = `${compactWidth}px`;
+          noButton.style.minHeight = `${Math.max(40, 56 - noClicks * 4)}px`;
+          noButton.style.fontSize = `${Math.max(13, 17 - noClicks)}px`;
+          noButton.style.transform = 'none';
+          moveNoButton();
+        } else {
+          noButton.style.transform = 'scale(.92)';
+        }
+        return;
       }
-      return;
-    }
 
-    noButton.textContent = '快哭了 😭';
-    noButton.classList.add('is-chasing', 'is-running');
-    noButton.style.transform = 'none';
-    noButton.style.opacity = '.86';
-    moveNoButton();
+      noButton.textContent = '快哭了 😭';
+      noButton.classList.add('is-chasing', 'is-running');
+      noButton.style.transform = 'none';
+      noButton.style.opacity = '.86';
+      moveNoButton();
+    } finally {
+      noButton.disabled = false;
+      isUpdatingChoice = false;
+    }
   }
 
   function sprinkle(count = 30) {

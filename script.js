@@ -76,16 +76,18 @@
     const minTop = Math.max(visibleMinTop, cardRect.top + cardInset);
     const maxLeft = Math.max(minLeft, Math.min(visibleMaxLeft, cardRect.right - width - cardInset));
     const maxTop = Math.max(minTop, Math.min(visibleMaxTop, cardRect.bottom - height - cardInset));
-    const middleTop = Math.min(maxTop, Math.max(minTop, viewportTop + (viewportHeight - height) / 2));
-    // Cycle through fixed positions inside the current invitation card.
+    const yesRect = yesButton.getBoundingClientRect();
+    const gap = 12;
+    const clampLeft = (value) => Math.min(maxLeft, Math.max(minLeft, value));
+    const clampTop = (value) => Math.min(maxTop, Math.max(minTop, value));
+    // Keep the playful button close to “好呀”, instead of sending it to the
+    // far corners of the invitation card.
     const safeSpots = [
-      [minLeft, minTop],
-      [maxLeft, minTop],
-      [minLeft, middleTop],
-      [maxLeft, middleTop],
-      [minLeft, maxTop],
-      [maxLeft, maxTop]
-    ];
+      [yesRect.right + gap, yesRect.top + (yesRect.height - height) / 2],
+      [yesRect.left - width - gap, yesRect.top + (yesRect.height - height) / 2],
+      [yesRect.left + (yesRect.width - width) / 2, yesRect.bottom + gap],
+      [yesRect.left + (yesRect.width - width) / 2, yesRect.top - height - gap]
+    ].map(([left, top]) => [clampLeft(left), clampTop(top)]);
     safeSpotIndex = (safeSpotIndex + 1) % safeSpots.length;
     const [left, top] = safeSpots[safeSpotIndex];
 

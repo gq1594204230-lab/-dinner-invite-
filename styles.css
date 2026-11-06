@@ -73,7 +73,7 @@ button { font-family:inherit; border:0; cursor:pointer; touch-action: manipulati
 }
 .no-button:active { color:#b9516f; background:#fff5f6; }
 .no-button.is-chasing {
-  position:fixed; z-index:50; background:#fff8fa;
+  position:fixed; z-index:60; background:#fff8fa;
   transition:left .3s cubic-bezier(.2,.85,.25,1.2), top .3s cubic-bezier(.2,.85,.25,1.2), transform .36s cubic-bezier(.2,.85,.25,1.24), box-shadow .25s ease, background .25s ease, opacity .3s ease;
 }
 .no-button.is-running {
@@ -106,3 +106,4 @@ button { font-family:inherit; border:0; cursor:pointer; touch-action: manipulati
 
 @media (max-height: 650px) { .card { padding-top:24px; padding-bottom:22px; } .reaction-stage { width:90px; height:90px; margin-bottom:8px; } .choices { margin-top:17px; gap:8px; min-height:112px; } }
 @media (prefers-reduced-motion: reduce) { *,*::before,*::after { animation-duration:.01ms!important; animation-iteration-count:1!important; scroll-behavior:auto!important; } }
+

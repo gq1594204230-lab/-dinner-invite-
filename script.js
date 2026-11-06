@@ -4,6 +4,7 @@
   const noButton = document.getElementById('noButton');
   const celebration = document.getElementById('celebration');
   const successCard = document.getElementById('successCard');
+  const inviteCard = document.getElementById('inviteCard');
   const reactionImage = document.getElementById('reactionImage');
   const reactionSources = [
     'assets/reaction-1.png',
@@ -64,25 +65,32 @@
     const bottomPadding = 28;
     const width = noButton.offsetWidth || 112;
     const height = noButton.offsetHeight || 38;
-    const visibleMinLeft = viewportLeft + sidePadding;
-    const visibleMinTop = viewportTop + topPadding;
-    const visibleMaxLeft = viewportLeft + viewportWidth - width - sidePadding;
-    const visibleMaxTop = viewportTop + viewportHeight - height - bottomPadding;
-    const minLeft = visibleMinLeft;
-    const minTop = visibleMinTop;
-    const maxLeft = Math.max(minLeft, visibleMaxLeft);
-    const maxTop = Math.max(minTop, visibleMaxTop);
+    const cardRect = inviteCard.getBoundingClientRect();
+    const cardInset = 14;
+    // The usable rectangle is the part of the *white invite card* that is
+    // still on screen. This is deliberately stricter than viewport-only
+    // clamping: the button can never escape below or beside the card.
+    const minLeft = Math.max(viewportLeft + sidePadding, cardRect.left + cardInset);
+    const minTop = Math.max(viewportTop + topPadding, cardRect.top + cardInset);
+    const maxLeft = Math.max(
+      minLeft,
+      Math.min(viewportLeft + viewportWidth - width - sidePadding, cardRect.right - width - cardInset)
+    );
+    const maxTop = Math.max(
+      minTop,
+      Math.min(viewportTop + viewportHeight - height - bottomPadding, cardRect.bottom - height - cardInset)
+    );
     const yesRect = yesButton.getBoundingClientRect();
-    const gap = 12;
     const clampLeft = (value) => Math.min(maxLeft, Math.max(minLeft, value));
     const clampTop = (value) => Math.min(maxTop, Math.max(minTop, value));
-    // Keep the refusal button close to “好呀”, while clamping every spot
-    // directly to the visible mobile viewport.
+    // Keep every chase position inside the large “好呀” button. It is both
+    // close to the choice and guaranteed to stay within the white card.
+    const inset = 10;
     const safeSpots = [
-      [yesRect.right + gap, yesRect.top + (yesRect.height - height) / 2],
-      [yesRect.left - width - gap, yesRect.top + (yesRect.height - height) / 2],
-      [yesRect.left + (yesRect.width - width) / 2, yesRect.bottom + gap],
-      [yesRect.left + (yesRect.width - width) / 2, yesRect.top - height - gap]
+      [yesRect.left + inset, yesRect.top + inset],
+      [yesRect.right - width - inset, yesRect.top + inset],
+      [yesRect.right - width - inset, yesRect.bottom - height - inset],
+      [yesRect.left + inset, yesRect.bottom - height - inset]
     ].map(([left, top]) => [clampLeft(left), clampTop(top)]);
     safeSpotIndex = (safeSpotIndex + 1) % safeSpots.length;
     const [left, top] = safeSpots[safeSpotIndex];
@@ -160,3 +168,4 @@
     if (noClicks >= 2) moveNoButton();
   });
 })();
+

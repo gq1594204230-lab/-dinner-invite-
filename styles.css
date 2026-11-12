@@ -48,6 +48,7 @@ body {
   transition: opacity .55s ease, transform .55s cubic-bezier(.2,.8,.2,1), visibility .55s;
 }
 .invite-card { position: relative; }
+.sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
 .eyebrow { margin: 0; color: #b18490; font-size: 12px; letter-spacing: .12em; font-weight: 600; }
 .eyebrow span { display:inline-block; margin: 0 8px; color:#eba1b5; transform: translateY(-1px); }
 
@@ -97,6 +98,19 @@ button { font-family:inherit; border:0; cursor:pointer; touch-action: manipulati
 
 .celebration { position:fixed; inset:0; pointer-events:none; z-index:5; overflow:hidden; }
 .confetti { position:absolute; top:-8vh; left:var(--left); font-size:var(--size); opacity:0; animation: fall var(--duration) cubic-bezier(.2,.65,.45,1) var(--delay) forwards; }
+
+.name-modal { position:fixed; inset:0; z-index:100; display:grid; place-items:center; padding:24px; background:rgba(84,48,61,.3); backdrop-filter:blur(7px); -webkit-backdrop-filter:blur(7px); opacity:1; visibility:visible; transition:opacity .28s ease, visibility .28s ease; }
+.name-modal.is-hidden { opacity:0; visibility:hidden; pointer-events:none; }
+.name-modal-card { width:min(100%, 330px); padding:31px 25px 26px; border:1px solid rgba(255,255,255,.92); border-radius:28px; text-align:center; color:var(--ink); background:rgba(255,253,253,.96); box-shadow:0 22px 54px rgba(101,55,68,.25); transform:translateY(0) scale(1); transition:transform .28s cubic-bezier(.2,.85,.25,1.18); }
+.name-modal.is-hidden .name-modal-card { transform:translateY(10px) scale(.96); }
+.name-modal-kicker { margin:0 0 7px; color:#c27d91; font-size:13px; letter-spacing:.12em; }
+.name-modal h2 { margin:0 0 21px; font-size:23px; line-height:1.3; }
+.name-modal input { width:100%; height:52px; padding:0 16px; border:1.5px solid #edb2c0; border-radius:15px; outline:none; color:var(--ink); background:#fffafb; font:600 17px/1.2 inherit; text-align:center; transition:border-color .2s ease, box-shadow .2s ease; }
+.name-modal input::placeholder { color:#c6a2ad; font-weight:400; }
+.name-modal input:focus { border-color:#e57c98; box-shadow:0 0 0 4px rgba(235,139,164,.15); }
+.name-error { min-height:19px; margin:5px 0 4px; color:#d65e7e; font-size:12px; }
+.name-submit { width:100%; min-height:52px; border-radius:15px; color:#fff; background:linear-gradient(135deg,#ed8ea5,#df6686); box-shadow:0 10px 19px rgba(213,87,122,.25); font-size:17px; font-weight:700; }
+.name-submit span { margin-left:4px; color:#fff7b9; }
 
 @keyframes heartbeat { 0%,100%{transform:scale(1)} 10%{transform:scale(1.08)} 20%{transform:scale(.98)} 35%{transform:scale(1.11)} 48%{transform:scale(1)} }
 @keyframes twinkle { from{opacity:.22; transform:scale(.65) rotate(0)} to{opacity:1; transform:scale(1.12) rotate(18deg)} }

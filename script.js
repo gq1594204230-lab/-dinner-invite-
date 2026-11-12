@@ -146,7 +146,7 @@
         return;
       }
 
-      noButton.textContent = '快哭了 😭';
+      noButton.textContent = '求求你了 😭';
       noButton.classList.add('is-chasing', 'is-running');
       noButton.style.transform = 'none';
       noButton.style.opacity = '.86';

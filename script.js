@@ -6,6 +6,11 @@
   const successCard = document.getElementById('successCard');
   const inviteCard = document.getElementById('inviteCard');
   const reactionImage = document.getElementById('reactionImage');
+  const guestName = document.getElementById('guestName');
+  const nameModal = document.getElementById('nameModal');
+  const nameForm = document.getElementById('nameForm');
+  const nameInput = document.getElementById('nameInput');
+  const nameError = document.getElementById('nameError');
   const reactionSources = [
     'assets/reaction-1.png',
     'assets/reaction-2.png',
@@ -180,8 +185,26 @@
     window.setTimeout(() => sprinkle(16), 720);
   }
 
+  function startInvitation(event) {
+    event.preventDefault();
+    const name = nameInput.value.trim().replace(/\s+/g, ' ').slice(0, 12);
+    if (!name) {
+      nameError.textContent = '写个名字再开始吧～';
+      nameInput.focus();
+      return;
+    }
+
+    guestName.textContent = name;
+    nameError.textContent = '';
+    nameInput.blur();
+    nameModal.classList.add('is-hidden');
+    nameModal.setAttribute('aria-hidden', 'true');
+  }
+
+  nameForm.addEventListener('submit', startInvitation);
   noButton.addEventListener('click', updateChoices);
   yesButton.addEventListener('click', acceptInvite);
+  window.setTimeout(() => nameInput.focus(), 180);
   window.addEventListener('resize', () => {
     if (noClicks >= 2) moveNoButton();
   });

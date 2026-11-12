@@ -24,7 +24,7 @@
         <div class="reaction-stage" aria-live="polite">
           <img class="reaction-image" id="reactionImage" src="assets/reaction-1.png" alt="可爱的猫咪拿着玫瑰" decoding="sync" />
         </div>
-        <h1>吴怡函，今天晚上有时间<br />一起吃个饭嘛？<span class="emoji">🥰</span></h1>
+        <h1><span id="guestName">你</span>，今天晚上有时间<br />一起吃个饭嘛？<span class="emoji">🥰</span></h1>
 
         <div class="choices" id="choices">
           <button class="yes-button" id="yesButton" type="button">
@@ -41,6 +41,17 @@
       </section>
     </main>
     <div class="celebration" id="celebration" aria-hidden="true"></div>
+    <div class="name-modal" id="nameModal" role="dialog" aria-modal="true" aria-labelledby="nameModalTitle">
+      <form class="name-modal-card" id="nameForm">
+        <p class="name-modal-kicker">先悄悄问一句</p>
+        <h2 id="nameModalTitle">怎么称呼你呀？</h2>
+        <label class="sr-only" for="nameInput">你的名字</label>
+        <input id="nameInput" name="name" type="text" maxlength="12" autocomplete="name" placeholder="输入你的名字" required />
+        <p class="name-error" id="nameError" aria-live="polite"></p>
+        <button class="name-submit" id="nameSubmit" type="submit">开始看看 <span>✦</span></button>
+      </form>
+    </div>
     <script src="script.js"></script>
   </body>
 </html>
+
